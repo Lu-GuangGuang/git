@@ -2,6 +2,7 @@
   <div id="app">
     <img alt="Vue logo" :src="'data:image/png;base64,' + img" />
     <img :src="img2" alt="11111" />
+    <h3>标题<h3/>
   </div>
 </template>
 
