@@ -1,91 +1,26 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" :src="'data:image/png;base64,' + img" />
-    <img :src="img2" alt="11111" />
-    <h3>标题<h3/>
+    <div class="cla" v-show="ty">
+      <router-link class="home" to="/lz">绿钻</router-link>
+      <router-link class="ch" to="/ch">超会</router-link>
+    </div>
+    {{ this.$store.state.type }}
+    {{ ty }}
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  name: "App",
   data() {
     return {
-      img: "",
-      img2: "",
-      time: null,
-      time2: null,
+      // type: this.$store.state.type,
     };
   },
-  created() {
-    this.axios({
-      method: "get",
-      url: "http://qr.rjk66.cn/api/gethzqr/",
-      params: {
-        // id:requestUrl
-      },
-    }).then((res) => {
-      console.log(res);
-      this.img2 = res.data.data.qrcode;
-      this.time2 = setInterval(() => {
-        this.axios({
-          method: "get",
-          url: "api/hzqrlogin/",
-          params: {
-            id: res.data.data.id,
-            r: Date.now(),
-          },
-        }).then((data) => {
-          console.log(data);
-          if (data.data.qrstate == 4) {
-            clearInterval(this.time2);
-          }
-        });
-      }, 2000);
-    });
-  },
-  mounted() {
-    this.axios({
-      method: "get",
-      url: "api/qqapi/login.php?do=getqrpic",
-      params: {},
-    }).then((res) => {
-      // console.log(res);
-      this.img = res.data.data;
-      this.time = setInterval(() => {
-        this.axios({
-          method: "get",
-          url: "api/qqapi/login.php?do=qrlogin",
-          params: {
-            qrsig: res.data.qrsig,
-            r: Date.now(),
-          },
-        })
-          .then((data) => {
-            // console.log(data);
-            // this.img = data.data.data;
-            if (data.data.saveOK == 0) {
-              this.axios({
-                method: "get",
-                url: "api/luzuan/",
-                params: {
-                  uin: data.data.uin,
-                  skey: data.data.skey,
-                  pskey: data.data.pskey,
-                  superkey: data.data.superkey,
-                },
-              }).then((res) => {
-                console.log(res);
-              });
-              clearInterval(this.time);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            clearInterval(this.time);
-          });
-      }, 2000);
-    });
+  computed: {
+    ...mapGetters(["ty"]),
   },
 };
 </script>
@@ -98,5 +33,21 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+* {
+  color: black;
+  text-decoration: none;
+}
+.cla {
+  margin: 20px auto;
+  width: 500px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home.router-link-active,
+.ch.router-link-active {
+  color: red;
 }
 </style>
